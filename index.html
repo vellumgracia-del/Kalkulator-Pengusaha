@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Pengusaha</title>
+    <!-- Menggunakan Tailwind CSS untuk styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Menggunakan Font Inter dari Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icon untuk tab browser -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <style>
+        /* Style kustom tambahan */
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .calculator-card {
+            display: none;
+        }
+        .calculator-card.active {
+            display: block;
+        }
+        /* Style untuk scrollbar agar lebih modern */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Animasi fade-in */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Landing Screen -->
+    <div id="landing-screen" class="fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50 transition-opacity duration-500">
+        <div class="text-center">
+            <!-- Ganti SVG ini dengan logo Anda -->
+            <svg class="mx-auto h-20 w-auto text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm-7.5-6.75h.008v.008H8.25v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 0 1 3 19.875v-6.75ZM19.5 3.75h.008v.008h-.008v-.008Z" />
+            </svg>
+            <h1 class="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">Kalkulator Pengusaha</h1>
+            <p class="mt-4 text-lg text-gray-300">Solusi lengkap untuk perhitungan bisnis Anda.</p>
+            <button id="enter-app-btn" class="mt-8 rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-transform transform hover:scale-105">
+                Masuk ke Aplikasi
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div id="main-app" class="hidden h-screen lg:grid lg:grid-cols-[280px_1fr]">
+        <!-- Sidebar -->
+        <aside class="bg-gray-800 text-white flex flex-col p-4 border-r border-gray-700 overflow-y-auto">
+            <div class="flex items-center gap-3 mb-6 px-2">
+                <div class="bg-indigo-600 p-2 rounded-lg">
+                    <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm-7.5-6.75h.008v.008H8.25v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Z" />
+                       <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 0 1 3 19.875v-6.75ZM19.5 3.75h.008v.008h-.008v-.008Z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold">Menu Kalkulator</h2>
+            </div>
+            <nav id="sidebar-nav" class="flex flex-col gap-1">
+                <!-- Kategori akan dimasukkan oleh JavaScript -->
+            </nav>
+            <div class="mt-auto pt-4 border-t border-gray-700">
+                <a href="#" class="nav-item block w-full text-left p-2 rounded-lg hover:bg-gray-700 transition-colors" data-calculator="history">
+                    Riwayat Perhitungan
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="bg-gray-100 p-6 md:p-8 overflow-y-auto">
+            <div id="calculator-content" class="max-w-4xl mx-auto">
+                <!-- Konten Kalkulator akan dimasukkan oleh JavaScript -->
+                <div id="welcome-screen" class="calculator-card active">
+                    <div class="bg-white p-8 rounded-xl shadow-md text-center">
+                        <h1 class="text-3xl font-bold text-gray-900">Selamat Datang di Kalkulator Pengusaha</h1>
+                        <p class="mt-4 text-lg text-gray-600">Pilih salah satu kalkulator dari menu di sebelah kiri untuk memulai perhitungan.</p>
+                        <div class="mt-8">
+                             <img src="https://placehold.co/600x300/e2e8f0/4a5568?text=Analisis+Data+Bisnis" alt="Ilustrasi Bisnis" class="mx-auto rounded-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile view not yet supported message -->
+    <div class="lg:hidden flex h-screen items-center justify-center p-4 text-center bg-gray-900 text-white">
+        <div>
+            <h2 class="text-2xl font-bold">Tampilan Seluler Dalam Pengembangan</h2>
+            <p class="mt-2">Untuk pengalaman terbaik, silakan gunakan aplikasi ini di perangkat desktop atau laptop.</p>
+        </div>
+    </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const landingScreen = document.getElementById('landing-screen');
+    const enterAppBtn = document.getElementById('enter-app-btn');
+    const mainApp = document.getElementById('main-app');
+    const sidebarNav = document.getElementById('sidebar-nav');
+    const calculatorContent = document.getElementById('calculator-content');
+    let history = [];
+
+    // Data untuk semua kalkulator dan kategorinya
+    const categories = {
+        "Dasar Keuangan & Akuntansi": {
+            "HPP": {
+                title: "Harga Pokok Penjualan (HPP)",
+                description: "Hitung biaya langsung yang timbul dari produksi barang atau jasa.",
+                inputs: [
+                    { id: "hpp-persediaan-awal", label: "Persediaan Awal", type: "number" },
+                    { id: "hpp-pembelian-bersih", label: "Pembelian Bersih", type: "number" },
+                    { id: "hpp-persediaan-akhir", label: "Persediaan Akhir", type: "number" },
+                ],
+                calculation: (vals) => vals['hpp-persediaan-awal'] + vals['hpp-pembelian-bersih'] - vals['hpp-persediaan-akhir'],
+                resultLabel: "Harga Pokok Penjualan (HPP)"
+            },
+            "BEP": {
+                title: "Break Even Point (BEP)",
+                description: "Tentukan titik di mana total pendapatan sama dengan total biaya.",
+                inputs: [
+                    { id: "bep-biaya-tetap", label: "Total Biaya Tetap", type: "number" },
+                    { id: "bep-harga-jual", label: "Harga Jual per Unit", type: "number" },
+                    { id: "bep-biaya-variabel", label: "Biaya Variabel per Unit", type: "number" },
+                ],
+                calculation: (vals) => {
+                    const denominator = vals['bep-harga-jual'] - vals['bep-biaya-variabel'];
+                    if (denominator <= 0) return { error: "Harga jual harus lebih besar dari biaya variabel." };
+                    const bepUnit = vals['bep-biaya-tetap'] / denominator;
+                    const bepPrice = bepUnit * vals['bep-harga-jual'];
+                    return `BEP Unit: ${Math.ceil(bepUnit).toLocaleString('id-ID')} unit<br>BEP Rupiah: ${formatCurrency(bepPrice)}`;
+                },
+                resultLabel: "Hasil Titik Impas (BEP)"
+            },
+            // Tambahkan kalkulator lain di kategori ini
+        },
+        "Pembiayaan, Kredit & Investasi": {
+            "ROI": {
+                title: "Return on Investment (ROI)",
+                description: "Ukur efisiensi atau profitabilitas investasi.",
+                inputs: [
+                    { id: "roi-laba-bersih", label: "Laba Bersih Investasi", type: "number" },
+                    { id: "roi-total-investasi", label: "Total Biaya Investasi", type: "number" },
+                ],
+                calculation: (vals) => {
+                    if (vals['roi-total-investasi'] === 0) return { error: "Total investasi tidak boleh nol." };
+                    const roi = (vals['roi-laba-bersih'] / vals['roi-total-investasi']) * 100;
+                    return `${roi.toFixed(2)} %`;
+                },
+                resultLabel: "Return on Investment (ROI)"
+            },
+            "Bunga Majemuk": {
+                title: "Bunga Majemuk",
+                description: "Hitung nilai masa depan investasi dengan bunga yang dihitung dari pokok awal dan akumulasi bunga.",
+                 inputs: [
+                    { id: "bm-pokok", label: "Modal Awal (Pokok)", type: "number" },
+                    { id: "bm-suku-bunga", label: "Suku Bunga per Periode (%)", type: "number" },
+                    { id: "bm-periode", label: "Jumlah Periode", type: "number" },
+                ],
+                calculation: (vals) => {
+                    const r = vals['bm-suku-bunga'] / 100;
+                    const result = vals['bm-pokok'] * Math.pow((1 + r), vals['bm-periode']);
+                    return result;
+                },
+                resultLabel: "Nilai Masa Depan"
+            }
+        },
+        "Biaya Produksi & Operasional": {
+             "Biaya Total": {
+                title: "Biaya Total",
+                description: "Hitung jumlah keseluruhan dari biaya tetap dan biaya variabel.",
+                inputs: [
+                    { id: "bt-biaya-tetap", label: "Total Biaya Tetap", type: "number" },
+                    { id: "bt-biaya-variabel", label: "Total Biaya Variabel", type: "number" },
+                ],
+                calculation: (vals) => vals['bt-biaya-tetap'] + vals['bt-biaya-variabel'],
+                resultLabel: "Total Biaya"
+            }
+        },
+        "Analisis Bisnis": {
+            "Margin Laba": {
+                title: "Margin Laba",
+                description: "Hitung persentase keuntungan dari pendapatan.",
+                 inputs: [
+                    { id: "ml-laba-bersih", label: "Laba Bersih", type: "number" },
+                    { id: "ml-penjualan", label: "Total Penjualan (Pendapatan)", type: "number" },
+                ],
+                calculation: (vals) => {
+                    if(vals['ml-penjualan'] === 0) return { error: "Penjualan tidak boleh nol."};
+                    const margin = (vals['ml-laba-bersih'] / vals['ml-penjualan']) * 100;
+                    return `${margin.toFixed(2)} %`;
+                },
+                resultLabel: "Margin Laba"
+            }
+        },
+        "Penganggaran & Perencanaan": {
+            "Variance Analysis": {
+                title: "Analisis Varians (Variance Analysis)",
+                description: "Bandingkan hasil aktual dengan angka yang dianggarkan atau direncanakan.",
+                inputs: [
+                    { id: "va-aktual", label: "Hasil Aktual", type: "number" },
+                    { id: "va-anggaran", label: "Angka Anggaran", type: "number" },
+                ],
+                calculation: (vals) => {
+                    const variance = vals['va-aktual'] - vals['va-anggaran'];
+                    const variancePercent = (vals['va-anggaran'] !== 0) ? (variance / vals['va-anggaran']) * 100 : 0;
+                    const status = variance >= 0 ? 'Menguntungkan' : 'Tidak Menguntungkan';
+                    return `Varians: ${formatCurrency(variance)}<br>Persentase: ${variancePercent.toFixed(2)}% (${status})`;
+                },
+                resultLabel: "Hasil Analisis Varians"
+            }
+        },
+        "Pajak & Regulasi": {
+            "PPN": {
+                title: "Pajak Pertambahan Nilai (PPN)",
+                description: "Hitung PPN yang dikenakan atas transaksi barang atau jasa.",
+                inputs: [
+                    { id: "ppn-dpp", label: "Dasar Pengenaan Pajak (DPP)", type: "number" },
+                    { id: "ppn-tarif", label: "Tarif PPN (%)", type: "number", value: 11 },
+                ],
+                calculation: (vals) => (vals['ppn-dpp'] * vals['ppn-tarif']) / 100,
+                resultLabel: "Jumlah PPN"
+            }
+        }
+        // Tambahkan kategori lain di sini
+    };
+
+    // Fungsi untuk memformat angka menjadi format mata uang Rupiah
+    function formatCurrency(value) {
+        if (typeof value !== 'number') return value;
+        return `Rp ${value.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+    }
+
+    // Fungsi untuk membuat & menampilkan kalkulator
+    function createCalculatorUI() {
+        // Buat Navigasi Sidebar
+        Object.entries(categories).forEach(([categoryName, calculators]) => {
+            const categoryDiv = document.createElement('div');
+            categoryDiv.innerHTML = `
+                <h3 class="px-2 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase">${categoryName}</h3>
+            `;
+            Object.keys(calculators).forEach(calcKey => {
+                const navItem = document.createElement('a');
+                navItem.href = '#';
+                navItem.className = 'nav-item block w-full text-left p-2 rounded-lg hover:bg-gray-700 transition-colors';
+                navItem.textContent = calculators[calcKey].title;
+                navItem.dataset.calculator = calcKey;
+                categoryDiv.appendChild(navItem);
+            });
+            sidebarNav.appendChild(categoryDiv);
+        });
+
+        // Buat Kartu Kalkulator di Konten Utama
+        Object.entries(categories).forEach(([_, calculators]) => {
+            Object.entries(calculators).forEach(([calcKey, calcDetails]) => {
+                const card = document.createElement('div');
+                card.id = `calc-${calcKey}`;
+                card.className = 'calculator-card';
+                
+                let inputsHTML = calcDetails.inputs.map(input => `
+                    <div class="mb-4">
+                        <label for="${input.id}" class="block text-sm font-medium text-gray-700 mb-1">${input.label}</label>
+                        <input type="${input.type}" id="${input.id}" name="${input.id}" ${input.value ? `value="${input.value}"` : ''} class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-gray-50" placeholder="Masukkan nilai...">
+                    </div>
+                `).join('');
+
+                card.innerHTML = `
+                    <div class="bg-white p-6 rounded-xl shadow-md fade-in">
+                        <h2 class="text-2xl font-bold text-gray-900">${calcDetails.title}</h2>
+                        <p class="mt-2 text-gray-600">${calcDetails.description}</p>
+                        <form id="form-${calcKey}" class="mt-6">
+                            ${inputsHTML}
+                            <div class="flex gap-4 mt-6">
+                                <button type="submit" class="flex-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">Hitung</button>
+                                <button type="reset" class="flex-1 rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300">Reset</button>
+                            </div>
+                        </form>
+                        <div id="result-${calcKey}" class="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200 hidden">
+                            <h3 class="text-md font-semibold text-indigo-800">${calcDetails.resultLabel}</h3>
+                            <p class="text-2xl font-bold text-indigo-900 mt-1"></p>
+                        </div>
+                        <button id="save-history-${calcKey}" class="mt-4 w-full rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 hidden">Simpan ke Riwayat</button>
+                    </div>
+                `;
+                calculatorContent.appendChild(card);
+            });
+        });
+        
+         // Buat halaman Riwayat
+        const historyCard = document.createElement('div');
+        historyCard.id = 'calc-history';
+        historyCard.className = 'calculator-card';
+        historyCard.innerHTML = `
+             <div class="bg-white p-6 rounded-xl shadow-md fade-in">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">Riwayat Perhitungan</h2>
+                    <button id="clear-history-btn" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500">Bersihkan Riwayat</button>
+                </div>
+                <div id="history-list" class="mt-6 space-y-4">
+                    <p class="text-gray-500">Belum ada riwayat perhitungan yang disimpan.</p>
+                </div>
+            </div>
+        `;
+        calculatorContent.appendChild(historyCard);
+    }
+
+    // Fungsi untuk menangani navigasi
+    function handleNavigation(e) {
+        if (e.target.classList.contains('nav-item')) {
+            e.preventDefault();
+            const calculatorId = e.target.dataset.calculator;
+            
+            // Hapus kelas aktif dari semua nav-item dan kartu
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('bg-gray-700', 'font-semibold'));
+            document.querySelectorAll('.calculator-card').forEach(card => card.classList.remove('active'));
+            
+            // Tambahkan kelas aktif ke yang diklik
+            e.target.classList.add('bg-gray-700', 'font-semibold');
+            const targetCard = document.getElementById(`calc-${calculatorId}`);
+            if(targetCard) {
+                targetCard.classList.add('active');
+            } else if (calculatorId === 'history') {
+                document.getElementById('calc-history').classList.add('active');
+                renderHistory();
+            }
+             // Tampilkan welcome screen jika tidak ada kalkulator aktif
+            const anyActive = document.querySelector('.calculator-card.active');
+            if (!anyActive) {
+                document.getElementById('welcome-screen').classList.add('active');
+            } else {
+                 document.getElementById('welcome-screen').classList.remove('active');
+            }
+        }
+    }
+    
+    // Fungsi untuk render riwayat
+    function renderHistory() {
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = '';
+        if (history.length === 0) {
+            historyList.innerHTML = '<p class="text-gray-500">Belum ada riwayat perhitungan yang disimpan.</p>';
+            return;
+        }
+        history.forEach((item, index) => {
+            const historyItem = document.createElement('div');
+            historyItem.className = 'p-4 border rounded-lg bg-gray-50';
+            
+            let inputsText = Object.entries(item.inputs).map(([key, value]) => `<li>${key}: ${value}</li>`).join('');
+
+            historyItem.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="font-semibold text-gray-800">${item.name}</p>
+                        <p class="text-lg font-bold text-indigo-700 mt-1">${item.result}</p>
+                        <details class="text-sm text-gray-600 mt-2">
+                            <summary class="cursor-pointer">Detail Input</summary>
+                            <ul class="list-disc pl-5 mt-1">${inputsText}</ul>
+                        </details>
+                    </div>
+                     <p class="text-xs text-gray-400">${item.timestamp}</p>
+                </div>
+            `;
+            historyList.appendChild(historyItem);
+        });
+    }
+
+    // Fungsi untuk menambahkan event listener ke semua form
+    function addFormListeners() {
+        Object.entries(categories).forEach(([_, calculators]) => {
+            Object.entries(calculators).forEach(([calcKey, calcDetails]) => {
+                const form = document.getElementById(`form-${calcKey}`);
+                const resultDiv = document.getElementById(`result-${calcKey}`);
+                const resultP = resultDiv.querySelector('p');
+                const saveBtn = document.getElementById(`save-history-${calcKey}`);
+
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const values = {};
+                    let inputsValid = true;
+                    calcDetails.inputs.forEach(input => {
+                        const inputEl = document.getElementById(input.id);
+                        const val = parseFloat(inputEl.value);
+                        if(isNaN(val)) {
+                            inputEl.classList.add('border-red-500');
+                            inputsValid = false;
+                        } else {
+                             inputEl.classList.remove('border-red-500');
+                        }
+                        values[input.id] = val;
+                    });
+                    
+                    if (!inputsValid) {
+                        resultDiv.classList.remove('hidden');
+                        resultP.innerHTML = `<span class="text-red-600">Harap isi semua input dengan angka yang valid.</span>`;
+                        saveBtn.classList.add('hidden');
+                        return;
+                    }
+
+                    const result = calcDetails.calculation(values);
+                    resultDiv.classList.remove('hidden');
+
+                    if (typeof result === 'object' && result.error) {
+                         resultP.innerHTML = `<span class="text-red-600">${result.error}</span>`;
+                         saveBtn.classList.add('hidden');
+                    } else if (typeof result === 'number') {
+                        const formattedResult = formatCurrency(result);
+                        resultP.innerHTML = formattedResult;
+                        saveBtn.dataset.result = formattedResult;
+                        saveBtn.classList.remove('hidden');
+                    } else {
+                        resultP.innerHTML = result; // Untuk hasil non-numerik seperti BEP
+                        saveBtn.dataset.result = result.replace(/<br>/g, ' | ');
+                        saveBtn.classList.remove('hidden');
+                    }
+                    
+                     // Menyimpan data input untuk riwayat
+                    const inputData = {};
+                    calcDetails.inputs.forEach(input => {
+                        inputData[input.label] = document.getElementById(input.id).value;
+                    });
+                    saveBtn.dataset.inputs = JSON.stringify(inputData);
+
+                });
+
+                form.addEventListener('reset', function () {
+                    resultDiv.classList.add('hidden');
+                    saveBtn.classList.add('hidden');
+                    calcDetails.inputs.forEach(input => {
+                         document.getElementById(input.id).classList.remove('border-red-500');
+                    });
+                });
+                
+                saveBtn.addEventListener('click', function() {
+                    history.push({
+                        name: calcDetails.title,
+                        result: this.dataset.result,
+                        inputs: JSON.parse(this.dataset.inputs),
+                        timestamp: new Date().toLocaleString('id-ID')
+                    });
+                    this.textContent = 'Berhasil Disimpan!';
+                    this.disabled = true;
+                    this.classList.remove('bg-green-600', 'hover:bg-green-500');
+                    this.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    
+                    setTimeout(() => {
+                        this.textContent = 'Simpan ke Riwayat';
+                        this.disabled = false;
+                        this.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                        this.classList.add('bg-green-600', 'hover:bg-green-500');
+                    }, 2000);
+                });
+            });
+        });
+        
+        document.getElementById('clear-history-btn').addEventListener('click', () => {
+           if(confirm('Apakah Anda yakin ingin menghapus semua riwayat?')) {
+               history = [];
+               renderHistory();
+           }
+        });
+    }
+
+    // --- INISIALISASI ---
+
+    // Tombol untuk masuk dari landing screen
+    enterAppBtn.addEventListener('click', () => {
+        landingScreen.classList.add('opacity-0');
+        setTimeout(() => {
+            landingScreen.style.display = 'none';
+            mainApp.classList.remove('hidden');
+            mainApp.classList.add('fade-in');
+        }, 500); // Sesuai dengan durasi transisi
+    });
+
+    // Buat UI
+    createCalculatorUI();
+
+    // Tambahkan event listener untuk navigasi sidebar
+    sidebarNav.addEventListener('click', handleNavigation);
+    document.querySelector('a[data-calculator="history"]').addEventListener('click', handleNavigation);
+    
+    // Tambahkan event listener ke form-form kalkulator
+    addFormListeners();
+});
+
+</script>
+</body>
+</html>
