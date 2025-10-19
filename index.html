@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Pengusaha</title>
+    <title>Kalkulator Pengusaha v2</title>
     <!-- Menggunakan Tailwind CSS untuk styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Menggunakan Font Inter dari Google Fonts -->
@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Icon untuk tab browser -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📊</text></svg>">
     <style>
         /* Style kustom tambahan */
         body {
@@ -47,6 +47,10 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        /* Transisi untuk sidebar */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -54,13 +58,13 @@
     <!-- Landing Screen -->
     <div id="landing-screen" class="fixed inset-0 bg-gray-900 flex flex-col items-center justify-center z-50 transition-opacity duration-500">
         <div class="text-center">
-            <!-- Ganti SVG ini dengan logo Anda -->
+            <!-- Logo Anda -->
             <svg class="mx-auto h-20 w-auto text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm-7.5-6.75h.008v.008H8.25v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 0 1 3 19.875v-6.75ZM19.5 3.75h.008v.008h-.008v-.008Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm-7.5-6.75h.008v.008H8.25v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 0 1 3 19.875v-6.75ZM19.5 3.75h.008v.008h-.008v-.008Z" />
             </svg>
             <h1 class="mt-6 text-4xl font-bold tracking-tight text-white sm:text-5xl">Kalkulator Pengusaha</h1>
-            <p class="mt-4 text-lg text-gray-300">Solusi lengkap untuk perhitungan bisnis Anda.</p>
+            <p class="mt-4 text-lg text-gray-300">Solusi lengkap perhitungan bisnis Anda, kini lebih powerful.</p>
             <button id="enter-app-btn" class="mt-8 rounded-md bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 transition-transform transform hover:scale-105">
                 Masuk ke Aplikasi
             </button>
@@ -68,17 +72,14 @@
     </div>
 
     <!-- Main App Container -->
-    <div id="main-app" class="hidden h-screen lg:grid lg:grid-cols-[280px_1fr]">
+    <div id="main-app" class="hidden">
         <!-- Sidebar -->
-        <aside class="bg-gray-800 text-white flex flex-col p-4 border-r border-gray-700 overflow-y-auto">
-            <div class="flex items-center gap-3 mb-6 px-2">
-                <div class="bg-indigo-600 p-2 rounded-lg">
-                    <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                       <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 15.75V18m-7.5-6.75h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm0 3h.008v.008H8.25v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm0-3h.008v.008h-.008v-.008Zm3.75 0h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm-7.5-6.75h.008v.008H8.25v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Zm.75 0h.008v.008h-.008v-.008Z" />
-                       <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h15.75c.621 0 1.125.504 1.125 1.125v6.75C21 20.496 20.496 21 19.875 21H4.125A1.125 1.125 0 0 1 3 19.875v-6.75ZM19.5 3.75h.008v.008h-.008v-.008Z" />
-                    </svg>
-                </div>
+        <aside id="sidebar" class="fixed inset-y-0 left-0 bg-gray-800 text-white flex flex-col p-4 border-r border-gray-700 w-72 transform -translate-x-full z-40 overflow-y-auto">
+            <div class="flex items-center justify-between gap-3 mb-6 px-2">
                 <h2 class="text-xl font-bold">Menu Kalkulator</h2>
+                <button id="close-menu-btn" class="p-1 rounded-full hover:bg-gray-700 lg:hidden">
+                     <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
             </div>
             <nav id="sidebar-nav" class="flex flex-col gap-1">
                 <!-- Kategori akan dimasukkan oleh JavaScript -->
@@ -91,38 +92,51 @@
         </aside>
 
         <!-- Main Content -->
-        <main class="bg-gray-100 p-6 md:p-8 overflow-y-auto">
-            <div id="calculator-content" class="max-w-4xl mx-auto">
-                <!-- Konten Kalkulator akan dimasukkan oleh JavaScript -->
-                <div id="welcome-screen" class="calculator-card active">
-                    <div class="bg-white p-8 rounded-xl shadow-md text-center">
-                        <h1 class="text-3xl font-bold text-gray-900">Selamat Datang di Kalkulator Pengusaha</h1>
-                        <p class="mt-4 text-lg text-gray-600">Pilih salah satu kalkulator dari menu di sebelah kiri untuk memulai perhitungan.</p>
-                        <div class="mt-8">
-                             <img src="https://placehold.co/600x300/e2e8f0/4a5568?text=Analisis+Data+Bisnis" alt="Ilustrasi Bisnis" class="mx-auto rounded-lg">
+        <main id="main-content" class="transition-all duration-300 ease-in-out">
+            <header class="sticky top-0 bg-white shadow-sm z-20">
+                <div class="flex items-center p-4">
+                    <button id="open-menu-btn" class="p-2 mr-4 rounded-md hover:bg-gray-200">
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    </button>
+                    <h1 class="text-xl font-semibold text-gray-800">Dashboard</h1>
+                </div>
+            </header>
+            <div class="p-6 md:p-8">
+                <div id="calculator-content" class="max-w-4xl mx-auto">
+                     <!-- Konten Kalkulator akan dimasukkan oleh JavaScript -->
+                     <div id="welcome-screen" class="calculator-card active">
+                        <div class="bg-white p-8 rounded-xl shadow-md text-center">
+                            <h1 class="text-3xl font-bold text-gray-900">Selamat Datang di Kalkulator Pengusaha</h1>
+                            <p class="mt-4 text-lg text-gray-600">Pilih kalkulator dari menu <span class="font-semibold text-indigo-600">☰</span> di pojok kiri atas untuk memulai.</p>
+                            <div class="mt-8">
+                                 <img src="https://placehold.co/600x300/e2e8f0/4a5568?text=Analisis+Data+Bisnis" alt="Ilustrasi Bisnis" class="mx-auto rounded-lg">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
-    </div>
 
-    <!-- Mobile view not yet supported message -->
-    <div class="lg:hidden flex h-screen items-center justify-center p-4 text-center bg-gray-900 text-white">
-        <div>
-            <h2 class="text-2xl font-bold">Tampilan Seluler Dalam Pengembangan</h2>
-            <p class="mt-2">Untuk pengalaman terbaik, silakan gunakan aplikasi ini di perangkat desktop atau laptop.</p>
-        </div>
+        <!-- Overlay for mobile menu -->
+        <div id="menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden"></div>
     </div>
 
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // DOM Elements
     const landingScreen = document.getElementById('landing-screen');
     const enterAppBtn = document.getElementById('enter-app-btn');
     const mainApp = document.getElementById('main-app');
+    const sidebar = document.getElementById('sidebar');
     const sidebarNav = document.getElementById('sidebar-nav');
     const calculatorContent = document.getElementById('calculator-content');
+    const openMenuBtn = document.getElementById('open-menu-btn');
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const mainContent = document.getElementById('main-content');
+    const headerTitle = document.querySelector('#main-content header h1');
+
     let history = [];
 
     // Data untuk semua kalkulator dan kategorinya
@@ -136,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     { id: "hpp-pembelian-bersih", label: "Pembelian Bersih", type: "number" },
                     { id: "hpp-persediaan-akhir", label: "Persediaan Akhir", type: "number" },
                 ],
-                calculation: (vals) => vals['hpp-persediaan-awal'] + vals['hpp-pembelian-bersih'] - vals['hpp-persediaan-akhir'],
+                calculation: (v) => v['hpp-persediaan-awal'] + v['hpp-pembelian-bersih'] - v['hpp-persediaan-akhir'],
                 resultLabel: "Harga Pokok Penjualan (HPP)"
             },
             "BEP": {
@@ -147,94 +161,417 @@ document.addEventListener('DOMContentLoaded', function () {
                     { id: "bep-harga-jual", label: "Harga Jual per Unit", type: "number" },
                     { id: "bep-biaya-variabel", label: "Biaya Variabel per Unit", type: "number" },
                 ],
-                calculation: (vals) => {
-                    const denominator = vals['bep-harga-jual'] - vals['bep-biaya-variabel'];
+                calculation: (v) => {
+                    const denominator = v['bep-harga-jual'] - v['bep-biaya-variabel'];
                     if (denominator <= 0) return { error: "Harga jual harus lebih besar dari biaya variabel." };
-                    const bepUnit = vals['bep-biaya-tetap'] / denominator;
-                    const bepPrice = bepUnit * vals['bep-harga-jual'];
+                    const bepUnit = v['bep-biaya-tetap'] / denominator;
+                    const bepPrice = bepUnit * v['bep-harga-jual'];
                     return `BEP Unit: ${Math.ceil(bepUnit).toLocaleString('id-ID')} unit<br>BEP Rupiah: ${formatCurrency(bepPrice)}`;
                 },
                 resultLabel: "Hasil Titik Impas (BEP)"
             },
-            // Tambahkan kalkulator lain di kategori ini
+            "LabaKotor": {
+                title: "Laba Kotor",
+                description: "Hitung selisih antara pendapatan dari penjualan dengan harga pokok penjualan.",
+                inputs: [
+                    { id: "lk-penjualan", label: "Total Penjualan (Pendapatan)", type: "number" },
+                    { id: "lk-hpp", label: "Harga Pokok Penjualan (HPP)", type: "number" },
+                ],
+                calculation: (v) => v['lk-penjualan'] - v['lk-hpp'],
+                resultLabel: "Laba Kotor"
+            },
+            "LabaBersih": {
+                title: "Laba Bersih",
+                description: "Hitung laba yang tersisa setelah dikurangi semua beban, termasuk pajak.",
+                inputs: [
+                    { id: "lb-laba-kotor", label: "Laba Kotor", type: "number" },
+                    { id: "lb-beban-ops", label: "Beban Operasional", type: "number" },
+                    { id: "lb-pajak", label: "Pajak", type: "number" },
+                ],
+                calculation: (v) => v['lb-laba-kotor'] - v['lb-beban-ops'] - v['lb-pajak'],
+                resultLabel: "Laba Bersih"
+            },
+            "ArusKas": {
+                title: "Arus Kas (Cash Flow)",
+                description: "Hitung selisih antara total kas yang masuk dengan total kas yang keluar.",
+                inputs: [
+                    { id: "ak-kas-masuk", label: "Total Kas Masuk", type: "number" },
+                    { id: "ak-kas-keluar", label: "Total Kas Keluar", type: "number" },
+                ],
+                calculation: (v) => v['ak-kas-masuk'] - v['ak-kas-keluar'],
+                resultLabel: "Arus Kas Bersih"
+            },
+            "Depresiasi": {
+                title: "Depresiasi (Metode Garis Lurus)",
+                description: "Hitung penyusutan nilai aset tetap selama umur ekonomisnya.",
+                inputs: [
+                    { id: "d-harga-perolehan", label: "Harga Perolehan Aset", type: "number" },
+                    { id: "d-nilai-sisa", label: "Nilai Sisa (Residu)", type: "number" },
+                    { id: "d-umur-ekonomis", label: "Umur Ekonomis (Tahun)", type: "number" },
+                ],
+                calculation: (v) => {
+                    if (v['d-umur-ekonomis'] === 0) return { error: "Umur ekonomis tidak boleh nol." };
+                    const depr = (v['d-harga-perolehan'] - v['d-nilai-sisa']) / v['d-umur-ekonomis'];
+                    return `${formatCurrency(depr)} / tahun`;
+                },
+                resultLabel: "Beban Depresiasi Tahunan"
+            }
         },
         "Pembiayaan, Kredit & Investasi": {
+            "Anuitas": {
+                title: "Anuitas (Cicilan Pinjaman)",
+                description: "Hitung jumlah cicilan tetap per periode untuk pinjaman.",
+                inputs: [
+                    { id: "an-pokok", label: "Jumlah Pokok Pinjaman", type: "number" },
+                    { id: "an-bunga", label: "Suku Bunga per Tahun (%)", type: "number" },
+                    { id: "an-periode", label: "Jangka Waktu (Bulan)", type: "number" },
+                ],
+                calculation: (v) => {
+                    if (v['an-periode'] === 0) return { error: "Periode tidak boleh nol." };
+                    const r = (v['an-bunga'] / 100) / 12; // Bunga bulanan
+                    if (r === 0) return v['an-pokok'] / v['an-periode'];
+                    const anuitas = v['an-pokok'] * (r * Math.pow(1 + r, v['an-periode'])) / (Math.pow(1 + r, v['an-periode']) - 1);
+                    return `${formatCurrency(anuitas)} / bulan`;
+                },
+                resultLabel: "Cicilan per Bulan"
+            },
+            "BungaTunggal": {
+                title: "Bunga Tunggal",
+                description: "Hitung bunga yang didapat dari modal pokok saja.",
+                inputs: [
+                    { id: "bt-pokok", label: "Modal Pokok", type: "number" },
+                    { id: "bt-bunga", label: "Suku Bunga per Tahun (%)", type: "number" },
+                    { id: "bt-waktu", label: "Jangka Waktu (Tahun)", type: "number" },
+                ],
+                calculation: (v) => v['bt-pokok'] * (v['bt-bunga'] / 100) * v['bt-waktu'],
+                resultLabel: "Total Bunga Tunggal"
+            },
+            "BungaMajemuk": {
+                title: "Bunga Majemuk",
+                description: "Hitung total akumulasi modal beserta bunganya dari waktu ke waktu.",
+                inputs: [
+                    { id: "bm-pokok", label: "Modal Awal (Pokok)", type: "number" },
+                    { id: "bm-bunga", label: "Suku Bunga per Periode (%)", type: "number" },
+                    { id: "bm-periode", label: "Jumlah Periode", type: "number" },
+                ],
+                calculation: (v) => {
+                    const r = v['bm-bunga'] / 100;
+                    const total = v['bm-pokok'] * Math.pow((1 + r), v['bm-periode']);
+                    const interest = total - v['bm-pokok'];
+                    return `Total Akhir: ${formatCurrency(total)}<br>Total Bunga: ${formatCurrency(interest)}`;
+                },
+                resultLabel: "Hasil Bunga Majemuk"
+            },
+            "NPV": {
+                title: "Net Present Value (NPV)",
+                description: "Hitung nilai sekarang dari arus kas masa depan untuk mengevaluasi kelayakan investasi.",
+                inputs: [
+                    { id: "npv-investasi", label: "Investasi Awal", type: "number" },
+                    { id: "npv-diskon", label: "Tingkat Diskonto (%)", type: "number" },
+                    { id: "npv-cf1", label: "Arus Kas Tahun 1", type: "number" },
+                    { id: "npv-cf2", label: "Arus Kas Tahun 2", type: "number" },
+                    { id: "npv-cf3", label: "Arus Kas Tahun 3", type: "number" },
+                    { id: "npv-cf4", label: "Arus Kas Tahun 4", type: "number" },
+                    { id: "npv-cf5", label: "Arus Kas Tahun 5", type: "number" },
+                ],
+                calculation: (v) => {
+                    const r = v['npv-diskon'] / 100;
+                    let pv = 0;
+                    for (let t = 1; t <= 5; t++) {
+                        const cf = v[`npv-cf${t}`] || 0;
+                        pv += cf / Math.pow(1 + r, t);
+                    }
+                    const npv = pv - v['npv-investasi'];
+                    const status = npv >= 0 ? '<span class="text-green-600">(Layak)</span>' : '<span class="text-red-600">(Tidak Layak)</span>';
+                    return `${formatCurrency(npv)} ${status}`;
+                },
+                resultLabel: "Net Present Value (NPV)"
+            },
+            "IRR": {
+                title: "Internal Rate of Return (IRR)",
+                description: "Hitung tingkat pengembalian internal dari suatu investasi. (Perkiraan)",
+                inputs: [
+                    { id: "irr-investasi", label: "Investasi Awal", type: "number" },
+                    { id: "irr-cf1", label: "Arus Kas Tahun 1", type: "number" },
+                    { id: "irr-cf2", label: "Arus Kas Tahun 2", type: "number" },
+                    { id: "irr-cf3", label: "Arus Kas Tahun 3", type: "number" },
+                    { id: "irr-cf4", label: "Arus Kas Tahun 4", type: "number" },
+                    { id: "irr-cf5", label: "Arus Kas Tahun 5", type: "number" },
+                ],
+                calculation: (v) => {
+                    const cfs = [-v['irr-investasi']];
+                    for (let i = 1; i <= 5; i++) cfs.push(v[`irr-cf${i}`] || 0);
+
+                    // Fungsi untuk menghitung NPV berdasarkan rate
+                    const calculateNPV = (rate) => {
+                        let npv = 0;
+                        for (let t = 0; t < cfs.length; t++) {
+                            npv += cfs[t] / Math.pow(1 + rate, t);
+                        }
+                        return npv;
+                    };
+
+                    // Metode iterasi sederhana untuk mencari IRR
+                    let irr = 0.1; // Tebakan awal 10%
+                    let delta = 0.05;
+                    for (let i = 0; i < 100; i++) {
+                        let npv = calculateNPV(irr);
+                        if (Math.abs(npv) < 1e-5) break; // Cukup dekat dengan nol
+                        if (npv > 0) {
+                            irr += delta;
+                        } else {
+                            irr -= delta;
+                        }
+                        delta /= 2;
+                    }
+                    if (irr > -1 && irr < 5) { // Batas wajar IRR
+                         return `${(irr * 100).toFixed(2)} %`;
+                    } else {
+                        return "Tidak dapat dihitung (arus kas tidak biasa).";
+                    }
+                },
+                resultLabel: "Internal Rate of Return (IRR)"
+            },
             "ROI": {
                 title: "Return on Investment (ROI)",
                 description: "Ukur efisiensi atau profitabilitas investasi.",
                 inputs: [
-                    { id: "roi-laba-bersih", label: "Laba Bersih Investasi", type: "number" },
-                    { id: "roi-total-investasi", label: "Total Biaya Investasi", type: "number" },
+                    { id: "roi-laba", label: "Laba Bersih dari Investasi", type: "number" },
+                    { id: "roi-investasi", label: "Biaya Investasi", type: "number" },
                 ],
-                calculation: (vals) => {
-                    if (vals['roi-total-investasi'] === 0) return { error: "Total investasi tidak boleh nol." };
-                    const roi = (vals['roi-laba-bersih'] / vals['roi-total-investasi']) * 100;
-                    return `${roi.toFixed(2)} %`;
+                calculation: (v) => {
+                    if (v['roi-investasi'] === 0) return { error: "Biaya investasi tidak boleh nol." };
+                    return `${((v['roi-laba'] / v['roi-investasi']) * 100).toFixed(2)} %`;
                 },
                 resultLabel: "Return on Investment (ROI)"
             },
-            "Bunga Majemuk": {
-                title: "Bunga Majemuk",
-                description: "Hitung nilai masa depan investasi dengan bunga yang dihitung dari pokok awal dan akumulasi bunga.",
-                 inputs: [
-                    { id: "bm-pokok", label: "Modal Awal (Pokok)", type: "number" },
-                    { id: "bm-suku-bunga", label: "Suku Bunga per Periode (%)", type: "number" },
-                    { id: "bm-periode", label: "Jumlah Periode", type: "number" },
+            "ROE": {
+                title: "Return on Equity (ROE)",
+                description: "Ukur kemampuan perusahaan menghasilkan laba dari modal sendiri.",
+                inputs: [
+                    { id: "roe-laba", label: "Laba Bersih Setelah Pajak", type: "number" },
+                    { id: "roe-modal", label: "Total Modal Sendiri (Ekuitas)", type: "number" },
                 ],
-                calculation: (vals) => {
-                    const r = vals['bm-suku-bunga'] / 100;
-                    const result = vals['bm-pokok'] * Math.pow((1 + r), vals['bm-periode']);
-                    return result;
+                calculation: (v) => {
+                    if (v['roe-modal'] === 0) return { error: "Modal tidak boleh nol." };
+                    return `${((v['roe-laba'] / v['roe-modal']) * 100).toFixed(2)} %`;
                 },
-                resultLabel: "Nilai Masa Depan"
+                resultLabel: "Return on Equity (ROE)"
+            },
+            "ROA": {
+                title: "Return on Assets (ROA)",
+                description: "Ukur kemampuan perusahaan menghasilkan laba dari total asetnya.",
+                inputs: [
+                    { id: "roa-laba", label: "Laba Bersih Setelah Pajak", type: "number" },
+                    { id: "roa-aset", label: "Total Aset", type: "number" },
+                ],
+                calculation: (v) => {
+                    if (v['roa-aset'] === 0) return { error: "Aset tidak boleh nol." };
+                    return `${((v['roa-laba'] / v['roa-aset']) * 100).toFixed(2)} %`;
+                },
+                resultLabel: "Return on Assets (ROA)"
+            },
+            "PaybackPeriod": {
+                title: "Payback Period",
+                description: "Hitung waktu yang dibutuhkan untuk mengembalikan modal investasi awal.",
+                inputs: [
+                    { id: "pp-investasi", label: "Investasi Awal", type: "number" },
+                    { id: "pp-kas-tahunan", label: "Arus Kas Masuk Tahunan", type: "number" },
+                ],
+                calculation: (v) => {
+                     if (v['pp-kas-tahunan'] <= 0) return { error: "Arus kas tahunan harus positif." };
+                     const years = v['pp-investasi'] / v['pp-kas-tahunan'];
+                     return `${years.toFixed(2)} tahun`;
+                },
+                resultLabel: "Periode Pengembalian"
+            },
+            "EBITDA": {
+                title: "EBITDA",
+                description: "Laba sebelum Bunga, Pajak, Depresiasi, dan Amortisasi.",
+                 inputs: [
+                    { id: "ebitda-laba-bersih", label: "Laba Bersih", type: "number" },
+                    { id: "ebitda-pajak", label: "Beban Pajak", type: "number" },
+                    { id: "ebitda-bunga", label: "Beban Bunga", type: "number" },
+                    { id: "ebitda-depresiasi", label: "Depresiasi", type: "number" },
+                    { id: "ebitda-amortisasi", label: "Amortisasi", type: "number" },
+                ],
+                calculation: (v) => v['ebitda-laba-bersih'] + v['ebitda-pajak'] + v['ebitda-bunga'] + v['ebitda-depresiasi'] + v['ebitda-amortisasi'],
+                resultLabel: "EBITDA"
             }
         },
         "Biaya Produksi & Operasional": {
-             "Biaya Total": {
+            "BiayaTotal": {
                 title: "Biaya Total",
                 description: "Hitung jumlah keseluruhan dari biaya tetap dan biaya variabel.",
                 inputs: [
-                    { id: "bt-biaya-tetap", label: "Total Biaya Tetap", type: "number" },
-                    { id: "bt-biaya-variabel", label: "Total Biaya Variabel", type: "number" },
+                    { id: "bt-tetap", label: "Total Biaya Tetap", type: "number" },
+                    { id: "bt-variabel", label: "Total Biaya Variabel", type: "number" },
                 ],
-                calculation: (vals) => vals['bt-biaya-tetap'] + vals['bt-biaya-variabel'],
-                resultLabel: "Total Biaya"
+                calculation: (v) => v['bt-tetap'] + v['bt-variabel'],
+                resultLabel: "Biaya Total"
+            },
+            "EfisiensiProduksi": {
+                title: "Efisiensi Produksi",
+                description: "Ukur perbandingan antara output aktual dengan output standar.",
+                inputs: [
+                    { id: "ep-aktual", label: "Output Aktual (unit)", type: "number" },
+                    { id: "ep-standar", label: "Output Standar (unit)", type: "number" },
+                ],
+                calculation: (v) => {
+                     if (v['ep-standar'] === 0) return { error: "Output standar tidak boleh nol." };
+                     return `${((v['ep-aktual'] / v['ep-standar']) * 100).toFixed(2)} %`;
+                },
+                resultLabel: "Tingkat Efisiensi"
+            },
+            "Produktivitas": {
+                title: "Produktivitas",
+                description: "Ukur rasio antara output yang dihasilkan dengan input yang digunakan.",
+                inputs: [
+                    { id: "p-output", label: "Jumlah Output (misal: unit)", type: "number" },
+                    { id: "p-input", label: "Jumlah Input (misal: jam kerja)", type: "number" },
+                ],
+                calculation: (v) => {
+                     if (v['p-input'] === 0) return { error: "Input tidak boleh nol." };
+                     return `${(v['p-output'] / v['p-input']).toFixed(2)} unit per input`;
+                },
+                resultLabel: "Tingkat Produktivitas"
             }
         },
         "Analisis Bisnis": {
-            "Margin Laba": {
+            "MarginLaba": {
                 title: "Margin Laba",
-                description: "Hitung persentase keuntungan dari pendapatan.",
-                 inputs: [
-                    { id: "ml-laba-bersih", label: "Laba Bersih", type: "number" },
-                    { id: "ml-penjualan", label: "Total Penjualan (Pendapatan)", type: "number" },
+                description: "Hitung persentase keuntungan dari total pendapatan.",
+                inputs: [
+                    { id: "ml-laba", label: "Laba Bersih", type: "number" },
+                    { id: "ml-penjualan", label: "Total Penjualan", type: "number" },
                 ],
-                calculation: (vals) => {
-                    if(vals['ml-penjualan'] === 0) return { error: "Penjualan tidak boleh nol."};
-                    const margin = (vals['ml-laba-bersih'] / vals['ml-penjualan']) * 100;
-                    return `${margin.toFixed(2)} %`;
+                calculation: (v) => {
+                    if (v['ml-penjualan'] === 0) return { error: "Penjualan tidak boleh nol." };
+                    return `${((v['ml-laba'] / v['ml-penjualan']) * 100).toFixed(2)} %`;
                 },
                 resultLabel: "Margin Laba"
+            },
+            "Markup": {
+                title: "Markup",
+                description: "Hitung persentase kenaikan harga dari HPP ke harga jual.",
+                inputs: [
+                    { id: "m-harga-jual", label: "Harga Jual", type: "number" },
+                    { id: "m-hpp", label: "Harga Pokok Penjualan (HPP)", type: "number" },
+                ],
+                calculation: (v) => {
+                     if (v['m-hpp'] === 0) return { error: "HPP tidak boleh nol." };
+                     return `${(((v['m-harga-jual'] - v['m-hpp']) / v['m-hpp']) * 100).toFixed(2)} %`;
+                },
+                resultLabel: "Persentase Markup"
+            },
+            "CashRatio": {
+                title: "Cash Ratio (Rasio Kas)",
+                description: "Ukur kemampuan perusahaan membayar utang jangka pendek dengan kas.",
+                inputs: [
+                    { id: "cr-kas", label: "Total Kas & Setara Kas", type: "number" },
+                    { id: "cr-utang-lancar", label: "Total Kewajiban Lancar", type: "number" },
+                ],
+                calculation: (v) => {
+                    if (v['cr-utang-lancar'] === 0) return { error: "Kewajiban lancar tidak boleh nol." };
+                    return `${(v['cr-kas'] / v['cr-utang-lancar']).toFixed(2)}`;
+                },
+                resultLabel: "Cash Ratio"
+            },
+            "CurrentRatio": {
+                title: "Current Ratio (Rasio Lancar)",
+                description: "Ukur kemampuan perusahaan membayar utang jangka pendek dengan aset lancar.",
+                inputs: [
+                    { id: "curr-aset-lancar", label: "Total Aset Lancar", type: "number" },
+                    { id: "curr-utang-lancar", label: "Total Kewajiban Lancar", type: "number" },
+                ],
+                calculation: (v) => {
+                     if (v['curr-utang-lancar'] === 0) return { error: "Kewajiban lancar tidak boleh nol." };
+                    return `${(v['curr-aset-lancar'] / v['curr-utang-lancar']).toFixed(2)}`;
+                },
+                resultLabel: "Current Ratio"
+            },
+            "DER": {
+                title: "Debt to Equity Ratio (DER)",
+                description: "Bandingkan total utang perusahaan dengan modal sendiri.",
+                inputs: [
+                    { id: "der-utang", label: "Total Utang", type: "number" },
+                    { id: "der-modal", label: "Total Modal (Ekuitas)", type: "number" },
+                ],
+                calculation: (v) => {
+                    if (v['der-modal'] === 0) return { error: "Modal tidak boleh nol." };
+                    return `${(v['der-utang'] / v['der-modal']).toFixed(2)}`;
+                },
+                resultLabel: "Debt to Equity Ratio"
+            },
+            "InventoryTurnover": {
+                title: "Inventory Turnover",
+                description: "Ukur seberapa sering persediaan terjual dalam satu periode.",
+                inputs: [
+                    { id: "it-hpp", label: "Harga Pokok Penjualan (HPP)", type: "number" },
+                    { id: "it-persediaan", label: "Rata-rata Persediaan", type: "number" },
+                ],
+                calculation: (v) => {
+                     if (v['it-persediaan'] === 0) return { error: "Persediaan tidak boleh nol." };
+                     return `${(v['it-hpp'] / v['it-persediaan']).toFixed(2)} kali`;
+                },
+                resultLabel: "Inventory Turnover Ratio"
+            },
+            "WorkingCapital": {
+                title: "Working Capital (Modal Kerja)",
+                description: "Hitung selisih antara aset lancar dengan kewajiban lancar.",
+                inputs: [
+                    { id: "wc-aset-lancar", label: "Total Aset Lancar", type: "number" },
+                    { id: "wc-utang-lancar", label: "Total Kewajiban Lancar", type: "number" },
+                ],
+                calculation: (v) => v['wc-aset-lancar'] - v['wc-utang-lancar'],
+                resultLabel: "Modal Kerja Bersih"
             }
         },
         "Penganggaran & Perencanaan": {
-            "Variance Analysis": {
-                title: "Analisis Varians (Variance Analysis)",
-                description: "Bandingkan hasil aktual dengan angka yang dianggarkan atau direncanakan.",
+            "VarianceAnalysis": {
+                title: "Analisis Varians",
+                description: "Bandingkan hasil aktual dengan angka yang dianggarkan.",
                 inputs: [
-                    { id: "va-aktual", label: "Hasil Aktual", type: "number" },
+                    { id: "va-aktual", label: "Hasil Aktual (Realisasi)", type: "number" },
                     { id: "va-anggaran", label: "Angka Anggaran", type: "number" },
                 ],
-                calculation: (vals) => {
-                    const variance = vals['va-aktual'] - vals['va-anggaran'];
-                    const variancePercent = (vals['va-anggaran'] !== 0) ? (variance / vals['va-anggaran']) * 100 : 0;
-                    const status = variance >= 0 ? 'Menguntungkan' : 'Tidak Menguntungkan';
-                    return `Varians: ${formatCurrency(variance)}<br>Persentase: ${variancePercent.toFixed(2)}% (${status})`;
+                calculation: (v) => {
+                    const variance = v['va-aktual'] - v['va-anggaran'];
+                    const status = variance >= 0 ? '<span class="text-green-600">(Favorable)</span>' : '<span class="text-red-600">(Unfavorable)</span>';
+                    return `${formatCurrency(variance)} ${status}`;
                 },
                 resultLabel: "Hasil Analisis Varians"
-            }
+            },
+            "CapEx": {
+                title: "Capital Expenditure (CapEx)",
+                description: "Total biaya untuk memperoleh atau meningkatkan aset tetap.",
+                inputs: [
+                    { id: "capex-total", label: "Total Pengeluaran Modal", type: "number" },
+                ],
+                calculation: (v) => v['capex-total'],
+                resultLabel: "Total CapEx"
+            },
+            "OpEx": {
+                title: "Operational Expenditure (OpEx)",
+                description: "Total biaya operasional rutin untuk menjalankan bisnis.",
+                inputs: [
+                    { id: "opex-total", label: "Total Pengeluaran Operasional", type: "number" },
+                ],
+                calculation: (v) => v['opex-total'],
+                resultLabel: "Total OpEx"
+            },
         },
         "Pajak & Regulasi": {
+            "PPh": {
+                title: "Pajak Penghasilan (PPh)",
+                description: "Hitung estimasi PPh berdasarkan tarif yang berlaku.",
+                 inputs: [
+                    { id: "pph-pkp", label: "Penghasilan Kena Pajak (PKP)", type: "number" },
+                    { id: "pph-tarif", label: "Tarif Pajak (%)", type: "number" },
+                ],
+                calculation: (v) => v['pph-pkp'] * (v['pph-tarif'] / 100),
+                resultLabel: "Jumlah PPh Terutang"
+            },
             "PPN": {
                 title: "Pajak Pertambahan Nilai (PPN)",
                 description: "Hitung PPN yang dikenakan atas transaksi barang atau jasa.",
@@ -242,27 +579,47 @@ document.addEventListener('DOMContentLoaded', function () {
                     { id: "ppn-dpp", label: "Dasar Pengenaan Pajak (DPP)", type: "number" },
                     { id: "ppn-tarif", label: "Tarif PPN (%)", type: "number", value: 11 },
                 ],
-                calculation: (vals) => (vals['ppn-dpp'] * vals['ppn-tarif']) / 100,
+                calculation: (v) => (v['ppn-dpp'] * v['ppn-tarif']) / 100,
                 resultLabel: "Jumlah PPN"
+            },
+            "PBB": {
+                title: "Pajak Bumi & Bangunan (PBB)",
+                description: "Hitung PBB berdasarkan Nilai Jual Objek Pajak (NJOP).",
+                inputs: [
+                    { id: "pbb-njop", label: "NJOP", type: "number" },
+                    { id: "pbb-tarif", label: "Tarif PBB Efektif (%)", type: "number", value: 0.1 },
+                ],
+                calculation: (v) => v['pbb-njop'] * (v['pbb-tarif'] / 100),
+                resultLabel: "Jumlah PBB Terutang"
             }
         }
-        // Tambahkan kategori lain di sini
     };
 
-    // Fungsi untuk memformat angka menjadi format mata uang Rupiah
+    // Fungsi utilitas
     function formatCurrency(value) {
         if (typeof value !== 'number') return value;
         return `Rp ${value.toLocaleString('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
     }
+    
+    // Fungsi menu
+    function openMenu() {
+        sidebar.classList.remove('-translate-x-full');
+        menuOverlay.classList.remove('hidden');
+        mainContent.classList.add('lg:ml-72');
+    }
 
-    // Fungsi untuk membuat & menampilkan kalkulator
-    function createCalculatorUI() {
+    function closeMenu() {
+        sidebar.classList.add('-translate-x-full');
+        menuOverlay.classList.add('hidden');
+        mainContent.classList.remove('lg:ml-72');
+    }
+
+    // Inisialisasi UI
+    function initializeUI() {
         // Buat Navigasi Sidebar
         Object.entries(categories).forEach(([categoryName, calculators]) => {
             const categoryDiv = document.createElement('div');
-            categoryDiv.innerHTML = `
-                <h3 class="px-2 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase">${categoryName}</h3>
-            `;
+            categoryDiv.innerHTML = `<h3 class="px-2 pt-4 pb-1 text-xs font-semibold text-gray-400 uppercase">${categoryName}</h3>`;
             Object.keys(calculators).forEach(calcKey => {
                 const navItem = document.createElement('a');
                 navItem.href = '#';
@@ -274,43 +631,41 @@ document.addEventListener('DOMContentLoaded', function () {
             sidebarNav.appendChild(categoryDiv);
         });
 
-        // Buat Kartu Kalkulator di Konten Utama
+        // Buat Kartu Kalkulator
         Object.entries(categories).forEach(([_, calculators]) => {
-            Object.entries(calculators).forEach(([calcKey, calcDetails]) => {
+            Object.entries(calculators).forEach(([calcKey, details]) => {
                 const card = document.createElement('div');
                 card.id = `calc-${calcKey}`;
                 card.className = 'calculator-card';
-                
-                let inputsHTML = calcDetails.inputs.map(input => `
+                let inputsHTML = details.inputs.map(input => `
                     <div class="mb-4">
                         <label for="${input.id}" class="block text-sm font-medium text-gray-700 mb-1">${input.label}</label>
-                        <input type="${input.type}" id="${input.id}" name="${input.id}" ${input.value ? `value="${input.value}"` : ''} class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-gray-50" placeholder="Masukkan nilai...">
+                        <input type="${input.type}" id="${input.id}" name="${input.id}" ${input.value ? `value="${input.value}"` : ''} step="any" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 bg-gray-50" placeholder="0">
                     </div>
                 `).join('');
 
                 card.innerHTML = `
                     <div class="bg-white p-6 rounded-xl shadow-md fade-in">
-                        <h2 class="text-2xl font-bold text-gray-900">${calcDetails.title}</h2>
-                        <p class="mt-2 text-gray-600">${calcDetails.description}</p>
+                        <h2 class="text-2xl font-bold text-gray-900">${details.title}</h2>
+                        <p class="mt-2 text-gray-600">${details.description}</p>
                         <form id="form-${calcKey}" class="mt-6">
-                            ${inputsHTML}
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6">${inputsHTML}</div>
                             <div class="flex gap-4 mt-6">
                                 <button type="submit" class="flex-1 rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500">Hitung</button>
                                 <button type="reset" class="flex-1 rounded-md bg-gray-200 px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-300">Reset</button>
                             </div>
                         </form>
                         <div id="result-${calcKey}" class="mt-6 p-4 bg-indigo-50 rounded-lg border border-indigo-200 hidden">
-                            <h3 class="text-md font-semibold text-indigo-800">${calcDetails.resultLabel}</h3>
+                            <h3 class="text-md font-semibold text-indigo-800">${details.resultLabel}</h3>
                             <p class="text-2xl font-bold text-indigo-900 mt-1"></p>
                         </div>
                         <button id="save-history-${calcKey}" class="mt-4 w-full rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 hidden">Simpan ke Riwayat</button>
-                    </div>
-                `;
+                    </div>`;
                 calculatorContent.appendChild(card);
             });
         });
         
-         // Buat halaman Riwayat
+        // Buat halaman Riwayat
         const historyCard = document.createElement('div');
         historyCard.id = 'calc-history';
         historyCard.className = 'calculator-card';
@@ -320,193 +675,159 @@ document.addEventListener('DOMContentLoaded', function () {
                     <h2 class="text-2xl font-bold text-gray-900">Riwayat Perhitungan</h2>
                     <button id="clear-history-btn" class="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500">Bersihkan Riwayat</button>
                 </div>
-                <div id="history-list" class="mt-6 space-y-4">
-                    <p class="text-gray-500">Belum ada riwayat perhitungan yang disimpan.</p>
-                </div>
-            </div>
-        `;
+                <div id="history-list" class="mt-6 space-y-4"></div>
+            </div>`;
         calculatorContent.appendChild(historyCard);
     }
 
-    // Fungsi untuk menangani navigasi
-    function handleNavigation(e) {
-        if (e.target.classList.contains('nav-item')) {
-            e.preventDefault();
-            const calculatorId = e.target.dataset.calculator;
-            
-            // Hapus kelas aktif dari semua nav-item dan kartu
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('bg-gray-700', 'font-semibold'));
-            document.querySelectorAll('.calculator-card').forEach(card => card.classList.remove('active'));
-            
-            // Tambahkan kelas aktif ke yang diklik
-            e.target.classList.add('bg-gray-700', 'font-semibold');
-            const targetCard = document.getElementById(`calc-${calculatorId}`);
-            if(targetCard) {
-                targetCard.classList.add('active');
-            } else if (calculatorId === 'history') {
-                document.getElementById('calc-history').classList.add('active');
-                renderHistory();
-            }
-             // Tampilkan welcome screen jika tidak ada kalkulator aktif
-            const anyActive = document.querySelector('.calculator-card.active');
-            if (!anyActive) {
-                document.getElementById('welcome-screen').classList.add('active');
-            } else {
-                 document.getElementById('welcome-screen').classList.remove('active');
-            }
-        }
-    }
-    
-    // Fungsi untuk render riwayat
-    function renderHistory() {
-        const historyList = document.getElementById('history-list');
-        historyList.innerHTML = '';
-        if (history.length === 0) {
-            historyList.innerHTML = '<p class="text-gray-500">Belum ada riwayat perhitungan yang disimpan.</p>';
-            return;
-        }
-        history.forEach((item, index) => {
-            const historyItem = document.createElement('div');
-            historyItem.className = 'p-4 border rounded-lg bg-gray-50';
-            
-            let inputsText = Object.entries(item.inputs).map(([key, value]) => `<li>${key}: ${value}</li>`).join('');
+    // Fungsi event handling
+    function addEventListeners() {
+        // Menu
+        openMenuBtn.addEventListener('click', openMenu);
+        closeMenuBtn.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
 
-            historyItem.innerHTML = `
-                <div class="flex justify-between items-start">
-                    <div>
-                        <p class="font-semibold text-gray-800">${item.name}</p>
-                        <p class="text-lg font-bold text-indigo-700 mt-1">${item.result}</p>
-                        <details class="text-sm text-gray-600 mt-2">
-                            <summary class="cursor-pointer">Detail Input</summary>
-                            <ul class="list-disc pl-5 mt-1">${inputsText}</ul>
-                        </details>
-                    </div>
-                     <p class="text-xs text-gray-400">${item.timestamp}</p>
-                </div>
-            `;
-            historyList.appendChild(historyItem);
+        // Navigasi
+        sidebar.addEventListener('click', (e) => {
+            if (e.target.classList.contains('nav-item')) {
+                e.preventDefault();
+                const calculatorId = e.target.dataset.calculator;
+                
+                document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('bg-gray-700', 'font-semibold'));
+                document.querySelectorAll('.calculator-card').forEach(card => card.classList.remove('active'));
+                
+                e.target.classList.add('bg-gray-700', 'font-semibold');
+                const targetCard = document.getElementById(`calc-${calculatorId}`);
+
+                if (targetCard) {
+                    targetCard.classList.add('active');
+                    headerTitle.textContent = e.target.textContent;
+                } else if (calculatorId === 'history') {
+                    document.getElementById('calc-history').classList.add('active');
+                    headerTitle.textContent = "Riwayat Perhitungan";
+                    renderHistory();
+                }
+
+                document.getElementById('welcome-screen').classList.remove('active');
+                if (window.innerWidth < 1024) closeMenu();
+            }
         });
-    }
-
-    // Fungsi untuk menambahkan event listener ke semua form
-    function addFormListeners() {
+        
+        // Form Kalkulator
         Object.entries(categories).forEach(([_, calculators]) => {
-            Object.entries(calculators).forEach(([calcKey, calcDetails]) => {
+            Object.entries(calculators).forEach(([calcKey, details]) => {
                 const form = document.getElementById(`form-${calcKey}`);
                 const resultDiv = document.getElementById(`result-${calcKey}`);
                 const resultP = resultDiv.querySelector('p');
                 const saveBtn = document.getElementById(`save-history-${calcKey}`);
 
-                form.addEventListener('submit', function (e) {
+                form.addEventListener('submit', (e) => {
                     e.preventDefault();
                     const values = {};
-                    let inputsValid = true;
-                    calcDetails.inputs.forEach(input => {
-                        const inputEl = document.getElementById(input.id);
-                        const val = parseFloat(inputEl.value);
-                        if(isNaN(val)) {
-                            inputEl.classList.add('border-red-500');
-                            inputsValid = false;
+                    let isValid = true;
+                    details.inputs.forEach(input => {
+                        const el = document.getElementById(input.id);
+                        const val = parseFloat(el.value);
+                        if(el.value === '' || isNaN(val)) {
+                            el.classList.add('border-red-500', 'ring-red-500');
+                            isValid = false;
                         } else {
-                             inputEl.classList.remove('border-red-500');
+                            el.classList.remove('border-red-500', 'ring-red-500');
                         }
                         values[input.id] = val;
                     });
                     
-                    if (!inputsValid) {
+                    if (!isValid) {
+                        resultP.innerHTML = `<span class="text-red-600">Harap isi semua input dengan angka valid.</span>`;
                         resultDiv.classList.remove('hidden');
-                        resultP.innerHTML = `<span class="text-red-600">Harap isi semua input dengan angka yang valid.</span>`;
                         saveBtn.classList.add('hidden');
                         return;
                     }
 
-                    const result = calcDetails.calculation(values);
+                    const result = details.calculation(values);
                     resultDiv.classList.remove('hidden');
 
                     if (typeof result === 'object' && result.error) {
                          resultP.innerHTML = `<span class="text-red-600">${result.error}</span>`;
                          saveBtn.classList.add('hidden');
-                    } else if (typeof result === 'number') {
-                        const formattedResult = formatCurrency(result);
-                        resultP.innerHTML = formattedResult;
-                        saveBtn.dataset.result = formattedResult;
-                        saveBtn.classList.remove('hidden');
                     } else {
-                        resultP.innerHTML = result; // Untuk hasil non-numerik seperti BEP
-                        saveBtn.dataset.result = result.replace(/<br>/g, ' | ');
+                        const finalResult = typeof result === 'number' ? formatCurrency(result) : result;
+                        resultP.innerHTML = finalResult;
+                        saveBtn.dataset.result = finalResult.replace(/<br>|<[^>]+>/g, ' | ');
                         saveBtn.classList.remove('hidden');
                     }
                     
-                     // Menyimpan data input untuk riwayat
                     const inputData = {};
-                    calcDetails.inputs.forEach(input => {
-                        inputData[input.label] = document.getElementById(input.id).value;
+                    details.inputs.forEach(input => {
+                        inputData[input.label] = formatCurrency(parseFloat(document.getElementById(input.id).value));
                     });
                     saveBtn.dataset.inputs = JSON.stringify(inputData);
-
                 });
 
-                form.addEventListener('reset', function () {
+                form.addEventListener('reset', () => {
                     resultDiv.classList.add('hidden');
                     saveBtn.classList.add('hidden');
-                    calcDetails.inputs.forEach(input => {
-                         document.getElementById(input.id).classList.remove('border-red-500');
-                    });
+                    details.inputs.forEach(input => document.getElementById(input.id).classList.remove('border-red-500', 'ring-red-500'));
                 });
                 
                 saveBtn.addEventListener('click', function() {
-                    history.push({
-                        name: calcDetails.title,
+                    history.unshift({
+                        name: details.title,
                         result: this.dataset.result,
                         inputs: JSON.parse(this.dataset.inputs),
                         timestamp: new Date().toLocaleString('id-ID')
                     });
                     this.textContent = 'Berhasil Disimpan!';
                     this.disabled = true;
-                    this.classList.remove('bg-green-600', 'hover:bg-green-500');
-                    this.classList.add('bg-gray-400', 'cursor-not-allowed');
-                    
-                    setTimeout(() => {
-                        this.textContent = 'Simpan ke Riwayat';
-                        this.disabled = false;
-                        this.classList.remove('bg-gray-400', 'cursor-not-allowed');
-                        this.classList.add('bg-green-600', 'hover:bg-green-500');
-                    }, 2000);
+                    setTimeout(() => { this.textContent = 'Simpan ke Riwayat'; this.disabled = false; }, 2000);
                 });
             });
         });
         
         document.getElementById('clear-history-btn').addEventListener('click', () => {
-           if(confirm('Apakah Anda yakin ingin menghapus semua riwayat?')) {
+           if(confirm('Anda yakin ingin menghapus semua riwayat?')) {
                history = [];
                renderHistory();
            }
         });
     }
 
-    // --- INISIALISASI ---
+    // Fungsi Render Riwayat
+    function renderHistory() {
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = history.length === 0 
+            ? '<p class="text-gray-500">Belum ada riwayat perhitungan.</p>'
+            : history.map(item => `
+                <div class="p-4 border rounded-lg bg-gray-50">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="font-semibold text-gray-800">${item.name}</p>
+                            <p class="text-lg font-bold text-indigo-700 mt-1">${item.result}</p>
+                            <details class="text-sm text-gray-600 mt-2">
+                                <summary class="cursor-pointer">Detail Input</summary>
+                                <ul class="list-disc pl-5 mt-1">${Object.entries(item.inputs).map(([key, value]) => `<li>${key}: ${value}</li>`).join('')}</ul>
+                            </details>
+                        </div>
+                        <p class="text-xs text-gray-400 flex-shrink-0 ml-4">${item.timestamp}</p>
+                    </div>
+                </div>
+            `).join('');
+    }
 
-    // Tombol untuk masuk dari landing screen
+    // Inisialisasi Aplikasi
     enterAppBtn.addEventListener('click', () => {
         landingScreen.classList.add('opacity-0');
         setTimeout(() => {
             landingScreen.style.display = 'none';
             mainApp.classList.remove('hidden');
             mainApp.classList.add('fade-in');
-        }, 500); // Sesuai dengan durasi transisi
+            if (window.innerWidth >= 1024) openMenu(); // Buka menu di desktop secara default
+        }, 500);
     });
 
-    // Buat UI
-    createCalculatorUI();
-
-    // Tambahkan event listener untuk navigasi sidebar
-    sidebarNav.addEventListener('click', handleNavigation);
-    document.querySelector('a[data-calculator="history"]').addEventListener('click', handleNavigation);
-    
-    // Tambahkan event listener ke form-form kalkulator
-    addFormListeners();
+    initializeUI();
+    addEventListeners();
 });
-
 </script>
 </body>
 </html>
